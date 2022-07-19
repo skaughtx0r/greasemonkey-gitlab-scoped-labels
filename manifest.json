@@ -1,0 +1,13 @@
+{
+    "content_scripts": [
+        {
+            "js": [ "gitlab-scoped-labels.js" ],
+            "matches": [ "<all_urls>" ],
+            "run_at": "document_idle"
+        }
+    ],
+    "description": "Renders Gitlab Free scoped labels correctly",
+    "manifest_version": 3,
+    "name": "Gitlab Scoped Labels",
+    "version": "1.0"
+ }
