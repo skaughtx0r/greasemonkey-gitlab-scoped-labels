@@ -35,7 +35,7 @@ if (document.querySelector("meta[property='og:site_name']")?.getAttribute("conte
           label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/<(.*)>([^:]*)::([^:]*)<\/span>/, "<$1>$2</span> <span class='gl-label-text-scoped'>$3</span>")
         }
       }
-    } else if(window.location.pathname.match(/.*\/issues\/.*/)) { // issue details
+    } else if(window.location.pathname.match(/.*\/-\/issues\/.*/)) { // issue details
       const menuLabels = document.querySelectorAll("span.gl-label");
       for(const label of menuLabels) {
         if(label.innerText.includes("::")) {
