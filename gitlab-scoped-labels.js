@@ -37,17 +37,27 @@ if (document.querySelector("meta[property='og:site_name']")?.getAttribute("conte
       }
     } else if(window.location.pathname.match(/.*\/-\/issues\/.*/)) { // issue details
       const sidebarLabels = function(mutations, observer) {
-        const menuLabels = document.querySelectorAll("span.gl-label");
+        const menuLabels = document.querySelectorAll(".js-labels-block span.gl-label");
         for(const label of menuLabels) {
           if(label.innerText.includes("::")) {
             label.classList.add("gl-label-scoped")
-            label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.*style="background-color: (#\w*)">.*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
+            label.firstChild.innerHTML.replace(/<.* style="background-color: (#\w*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;")
             label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/(.*)([^:]*)::([^:]*)(.*)/, "$1 $2</span> <span class='gl-label-text-scoped'>$3</span>$4")
           }
         }
       }
       const labelObserver = new MutationObserver(sidebarLabels)
       labelObserver.observe(document.querySelector(".js-labels-block"), { childList: true, subtree: true })
+
+      const menuLabels = document.querySelectorAll("span.gl-label");
+      for(const label of menuLabels) {
+        if(label.innerText.includes("::")) {
+          label.classList.add("gl-label-scoped")
+          const color = label.innerHTML.replace(/<.*style="background-color: (#\w*)".*/, "$1")
+          label.setAttribute("style", label.getAttribute("style") + "--label-background-color: " + color + "; --label-inset-border: inset 0 0 0 1px " + color + "; color " + color + ";")
+          label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/(.*)([^:]*)::([^:]*)(.*)/, "$1 $2</span> <span class='gl-label-text-scoped'>$3</span>$4")
+        }
+      }
       const callback = function(mutations, observer) {
         for(const mutation of mutations) {
           if(mutation.target.classList.contains("notes")) {
@@ -56,8 +66,8 @@ if (document.querySelector("meta[property='og:site_name']")?.getAttribute("conte
               for(const label of labels) {
                 if(label.innerText.includes("::")) {
                   label.classList.add("gl-label-scoped")
-                  label.firstChild.innerHTML.replace(/<.* style="background-color: (#\w*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;")
-                  label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.* style="background-color: (#\w*)".*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
+                  const color = label.innerHTML.replace(/<.*style="background-color: (#\w*)".*/, "$1")
+          label.setAttribute("style", label.getAttribute("style") + "--label-background-color: " + color + "; --label-inset-border: inset 0 0 0 1px " + color + "; color " + color + ";")
                   label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/<(.*)>([^:]*)::([^:]*)<\/span>/, "<$1>$2</span> <span class='gl-label-text-scoped'>$3</span>")
                 }
               }
