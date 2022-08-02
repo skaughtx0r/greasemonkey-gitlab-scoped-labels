@@ -26,15 +26,19 @@ if (document.querySelector("meta[property='og:site_name']")?.getAttribute("conte
       }
       const observer = new MutationObserver(callback)
       observer.observe(document, { childList: true, subtree: true })
-    } else if(window.location.pathname.match(/.*\/issues$/)) { // issues list
-      const labels = document.querySelectorAll("span.gl-label");
-      for(const label of labels) {
-        if(label.firstChild.firstChild.innerText.includes("::")) {
-          label.classList.add("gl-label-scoped")
-          label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.*style="background-color: (#\w*)">.*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
-          label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/<(.*)>([^:]*)::([^:]*)<\/span>/, "<$1>$2</span> <span class='gl-label-text-scoped'>$3</span>")
+    } else if(window.location.pathname.match(/(.*\/issues$)|(.*\/issues\/$)/)) { // issues list
+      const issuesList = function(mutations, observer) {
+        const labels = document.querySelectorAll("span.gl-label");
+        for(const label of labels) {
+          if(label.firstChild.firstChild.innerText.includes("::")) {
+            label.classList.add("gl-label-scoped")
+            label.setAttribute("style", label.getAttribute("style") + label.firstChild.innerHTML.replace(/<.*style="background-color: (#\w*)">.*/, "--label-background-color: $1; --label-inset-border: inset 0 0 0 1px $1;"))
+            label.firstChild.innerHTML = label.firstChild.innerHTML.replace(/<(.*)>([^:]*)::([^:]*)<\/span>/, "<$1>$2</span> <span class='gl-label-text-scoped'>$3</span>")
+          }
         }
       }
+      const labelObserver = new MutationObserver(issuesList)
+      labelObserver.observe(document.querySelector(".issuable-list-container"), { childList: true, subtree: true })
     } else if(window.location.pathname.match(/.*\/-\/issues\/.*/)) { // issue details
       const sidebarLabels = function(mutations, observer) {
         const menuLabels = document.querySelectorAll(".js-labels-block span.gl-label");
