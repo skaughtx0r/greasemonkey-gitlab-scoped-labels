@@ -37,8 +37,13 @@ if (document.querySelector("meta[property='og:site_name']")?.getAttribute("conte
           }
         }
       }
-      const labelObserver = new MutationObserver(issuesList)
-      labelObserver.observe(document.querySelector(".issuable-list-container"), { childList: true, subtree: true })
+      const issuableListContainer = document.querySelector(".issuable-list-container");
+      if (issuableListContainer) {
+        const labelObserver = new MutationObserver(issuesList);
+        labelObserver.observe(issuableListContainer, { childList: true, subtree: true });
+      } else {
+        issuesList(null, null);
+      }
     } else if(window.location.pathname.match(/.*\/-\/issues\/.*/)) { // issue details
       const sidebarLabels = function(mutations, observer) {
         const menuLabels = document.querySelectorAll(".js-labels-block span.gl-label");
